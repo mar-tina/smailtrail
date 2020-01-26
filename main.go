@@ -14,4 +14,5 @@ func initSmailClient() {
 	MySmailClient = &smailclient.SmailClient{}
 	MySmailClient.NewSmailClient("credentials.json")
 	MySmailClient.ListLabels()
+	MySmailClient.ListMessages()
 }
