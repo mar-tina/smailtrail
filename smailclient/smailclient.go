@@ -1,10 +1,13 @@
 package smailclient
 
 import (
+	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"log"
 
 	"github.com/mar-tina/smailtrail/auth"
+	"github.com/mar-tina/smailtrail/models"
 	"google.golang.org/api/gmail/v1"
 )
 
@@ -48,11 +51,20 @@ func (smail *SmailClient) ListMessages() {
 			log.Printf("ERROR: Failed to get message %v", err.Error())
 		}
 
+		newmsg := models.Message{}
 		jsonBytes, err := s.Payload.MarshalJSON()
 
-		res := string(jsonBytes)
+		err = json.Unmarshal(jsonBytes, &newmsg)
+		if err != nil {
+			log.Printf("Failed to unmarshal DATA %v", err.Error())
+		}
 
-		fmt.Printf("The msg %v\n", res)
+		body := newmsg.Parts[0].Body.Data
+
+		data, _ := base64.URLEncoding.DecodeString(body)
+		html := string(data)
+		fmt.Println(html)
+
 	}
 
 }
