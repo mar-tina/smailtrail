@@ -6,35 +6,46 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/mar-tina/smailtrail/auth"
-	"github.com/mar-tina/smailtrail/models"
+	"github.com/mar-tina/smailtrail/internal/auth"
+	"github.com/mar-tina/smailtrail/internal/models"
 	"google.golang.org/api/gmail/v1"
 )
 
 type ISmailClient interface {
-	ListLabels()
+	ListLabels() ([]string, error)
 	ListMessages()
 	NewSmailClient(creds string)
+	InitSmailClient(srv *gmail.Service)
 }
 
 type SmailClient struct {
 	srv *gmail.Service
 }
 
+func (smail *SmailClient) InitSmailClient(srv *gmail.Service) {
+	smail.srv = srv
+}
+
 func (smail *SmailClient) NewSmailClient(creds string) {
 	smail.srv = auth.Authorize(creds)
 }
 
-func (smail *SmailClient) ListLabels() {
+func (smail *SmailClient) ListLabels() ([]string, error) {
 	r, err := smail.srv.Users.Labels.List("me").Do()
 	if err != nil {
 		log.Printf("ERROR: Failed to read labels %v", err.Error())
 	}
 
+	var labels []string
 	log.Println("There are the labels")
 	for _, l := range r.Labels {
-		fmt.Printf("- %s\n", l.Name)
+		// fmt.Printf("- %s\n", l.Name)
+		labels = append(labels, fmt.Sprintf("%s", l.Name))
 	}
+
+	log.Printf("These are the labels %v", labels)
+
+	return labels, err
 }
 
 func (smail *SmailClient) ListMessages() {

@@ -14,19 +14,24 @@ import (
 	"google.golang.org/api/gmail/v1"
 )
 
+var GmailConfig *oauth2.Config
+
 func getClient(config *oauth2.Config) *http.Client {
-	tokFile := "token.json"
-	tok, err := tokenFromFile(tokFile)
-	if err != nil {
-		tok = getTokenFromWeb(config)
-		saveToken(tokFile, tok)
-	}
+	// tokFile := "token.json"
+	// tok, err := tokenFromFile(tokFile)
+	// if err != nil {
+	// 	tok = getTokenFromWeb(config)
+	// 	saveToken(tokFile, tok)
+	// }
+
+	tok := getTokenFromWeb(config)
 
 	return config.Client(context.Background(), tok)
 }
 
 func getTokenFromWeb(config *oauth2.Config) *oauth2.Token {
 	authURL := config.AuthCodeURL("state-token", oauth2.AccessTypeOffline)
+
 	fmt.Printf("Go to the following link in your browser and then type the authorization code: \n%v\n", authURL)
 
 	var authCode string
@@ -78,6 +83,40 @@ func Authorize(configFile string) *gmail.Service {
 	}
 
 	client := getClient(config)
+
+	srv, err := gmail.New(client)
+	if err != nil {
+		log.Fatalf("Unable to retrieve Gmail Client")
+	}
+
+	return srv
+}
+
+//Processing Auth through http function helpers
+func GetAuthURL(configFile string) string {
+	b, err := ioutil.ReadFile(configFile)
+	if err != nil {
+		log.Fatalf("Unable to read client secret file %v", err)
+	}
+
+	GmailConfig, err := google.ConfigFromJSON(b, gmail.GmailReadonlyScope, gmail.GmailComposeScope)
+	if err != nil {
+		log.Fatalf("Unable to parse client secret %v", err)
+	}
+
+	authURL := GmailConfig.AuthCodeURL("state-token", oauth2.AccessTypeOffline)
+
+	return authURL
+
+}
+
+func GetSrvFromAuthCode(code string) *gmail.Service {
+	tok, err := GmailConfig.Exchange(context.TODO(), code)
+	if err != nil {
+		log.Fatalf("Unable to retrieve token from web %v", err)
+	}
+
+	client := GmailConfig.Client(context.Background(), tok)
 
 	srv, err := gmail.New(client)
 	if err != nil {

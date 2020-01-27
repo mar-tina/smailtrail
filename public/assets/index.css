@@ -1,0 +1,15 @@
+.header {
+  display: flex;
+  justify-content: space-evenly;
+  padding: 30px;
+  margin: 10px;
+}
+
+.header > a {
+  text-decoration: none;
+}
+
+.auth-container {
+  padding: 50px;
+  max-width: 600px;
+}

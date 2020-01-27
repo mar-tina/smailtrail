@@ -12,3 +12,9 @@
 *.out
 credentials.json
 token.json
+
+# web
+/node_modules/
+/public/build/
+
+.DS_Store
