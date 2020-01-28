@@ -7,14 +7,11 @@ import (
 
 func main() {
 
-	// initSmailClient()
+	initSmailClient()
 
 	service.StartWebServer("8000")
 }
 
 func initSmailClient() {
 	service.MySmailClient = &smailclient.SmailClient{}
-	service.MySmailClient.NewSmailClient("credentials.json")
-	service.MySmailClient.ListLabels()
-	service.MySmailClient.ListMessages()
 }
