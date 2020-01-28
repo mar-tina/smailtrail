@@ -2,15 +2,51 @@ package service
 
 import (
 	"encoding/json"
+	"log"
 
 	"github.com/labstack/echo"
 	"github.com/mar-tina/smailtrail/internal/auth"
+	"github.com/mar-tina/smailtrail/internal/smailclient"
 )
 
+var MySmailClient smailclient.ISmailClient
+
+type AuthCode struct {
+	code string
+}
+
 func ListLabelsHandler(c echo.Context) error {
-	res, _ := MySmailClient.ListLabels()
+	log.Println("Im i even here")
+	res, err := MySmailClient.ListLabels()
+	if err != nil {
+		log.Println("Failed to fetch labels", err.Error())
+	}
+	log.Println("The res", res)
 	jsonBytes, _ := json.Marshal(res)
 	return c.String(200, string(jsonBytes))
+}
+
+func ListAllMessages(c echo.Context) error {
+
+	tokparam := c.QueryParam("nextpagetoken")
+
+	list, msgs, err := MySmailClient.ListMessages(tokparam)
+	if err != nil {
+		return c.String(500, err.Error())
+	}
+
+	var res map[string]interface{}
+	res = make(map[string]interface{}, 2)
+
+	res["list"] = list
+	res["msgs"] = msgs
+	return c.JSON(200, res)
+}
+
+func GetIndividualTrail(c echo.Context) error {
+	threadID := c.QueryParam("threadId")
+	MySmailClient.IndividualTrail(threadID)
+	return c.JSON(200, "working")
 }
 
 func InitialAuth(c echo.Context) error {
@@ -20,8 +56,18 @@ func InitialAuth(c echo.Context) error {
 }
 
 func ProcessToken(c echo.Context) error {
-	authcode := c.Param("code")
-	srv := auth.GetSrvFromAuthCode(authcode)
-	MySmailClient.InitSmailClient(srv)
-	return c.String(201, "Auth was successful")
+	m := echo.Map{}
+
+	err := c.Bind(&m)
+
+	if err != nil {
+		return c.String(500, err.Error())
+	}
+
+	err = MySmailClient.InitSmailClient("credentials.json", m["code"].(string))
+	if err != nil {
+		return c.String(500, err.Error())
+	}
+
+	return c.JSON(200, m["code"].(string))
 }

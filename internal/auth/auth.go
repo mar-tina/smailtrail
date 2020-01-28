@@ -16,47 +16,12 @@ import (
 
 var GmailConfig *oauth2.Config
 
-func getClient(config *oauth2.Config) *http.Client {
-	// tokFile := "token.json"
-	// tok, err := tokenFromFile(tokFile)
-	// if err != nil {
-	// 	tok = getTokenFromWeb(config)
-	// 	saveToken(tokFile, tok)
-	// }
+func getNewClient(config *oauth2.Config, tok *oauth2.Token) *http.Client {
+	tokFile := "token.json"
 
-	tok := getTokenFromWeb(config)
+	saveToken(tokFile, tok)
 
 	return config.Client(context.Background(), tok)
-}
-
-func getTokenFromWeb(config *oauth2.Config) *oauth2.Token {
-	authURL := config.AuthCodeURL("state-token", oauth2.AccessTypeOffline)
-
-	fmt.Printf("Go to the following link in your browser and then type the authorization code: \n%v\n", authURL)
-
-	var authCode string
-	if _, err := fmt.Scan(&authCode); err != nil {
-		log.Fatalf("unable to read the authorization code: %v", err)
-	}
-
-	tok, err := config.Exchange(context.TODO(), authCode)
-	if err != nil {
-		log.Fatalf("Unable to retrieve token from web %v", err)
-	}
-
-	return tok
-}
-
-func tokenFromFile(file string) (*oauth2.Token, error) {
-	f, err := os.Open(file)
-	if err != nil {
-		return nil, err
-	}
-
-	defer f.Close()
-	tok := &oauth2.Token{}
-	err = json.NewDecoder(f).Decode(tok)
-	return tok, err
 }
 
 func saveToken(path string, token *oauth2.Token) {
@@ -71,7 +36,7 @@ func saveToken(path string, token *oauth2.Token) {
 }
 
 //Authorize oauth setup to access Gmail
-func Authorize(configFile string) *gmail.Service {
+func Authorize(configFile, authcode string) *gmail.Service {
 	b, err := ioutil.ReadFile(configFile)
 	if err != nil {
 		log.Fatalf("Unable to read client secret file %v", err)
@@ -82,7 +47,12 @@ func Authorize(configFile string) *gmail.Service {
 		log.Fatalf("Unable to parse client secret %v", err)
 	}
 
-	client := getClient(config)
+	tok, err := config.Exchange(context.TODO(), authcode)
+	if err != nil {
+		log.Printf("Unable to retrieve token from web %v", err)
+	}
+
+	client := getNewClient(config, tok)
 
 	srv, err := gmail.New(client)
 	if err != nil {
@@ -111,16 +81,18 @@ func GetAuthURL(configFile string) string {
 }
 
 func GetSrvFromAuthCode(code string) *gmail.Service {
+	log.Println("Calling srvfromauthcode")
 	tok, err := GmailConfig.Exchange(context.TODO(), code)
 	if err != nil {
-		log.Fatalf("Unable to retrieve token from web %v", err)
+		log.Printf("Unable to retrieve token from web %v", err)
 	}
 
+	log.Println("Calling srvfromauthcode step 2")
 	client := GmailConfig.Client(context.Background(), tok)
 
 	srv, err := gmail.New(client)
 	if err != nil {
-		log.Fatalf("Unable to retrieve Gmail Client")
+		log.Println("Unable to retrieve Gmail Client")
 	}
 
 	return srv

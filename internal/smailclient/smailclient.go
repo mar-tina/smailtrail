@@ -3,6 +3,7 @@ package smailclient
 import (
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 
@@ -13,69 +14,93 @@ import (
 
 type ISmailClient interface {
 	ListLabels() ([]string, error)
-	ListMessages()
-	NewSmailClient(creds string)
-	InitSmailClient(srv *gmail.Service)
+	ListMessages(nextPageToken string) (models.GmailMsg, []models.Message, error)
+	InitSmailClient(credFile, authcode string) error
+	IndividualTrail(id string)
 }
 
 type SmailClient struct {
 	srv *gmail.Service
 }
 
-func (smail *SmailClient) InitSmailClient(srv *gmail.Service) {
-	smail.srv = srv
-}
+func (smail *SmailClient) InitSmailClient(credFile, code string) error {
 
-func (smail *SmailClient) NewSmailClient(creds string) {
-	smail.srv = auth.Authorize(creds)
+	smail.srv = auth.Authorize(credFile, code)
+	if smail.srv == nil {
+		return errors.New("Failed to init client")
+	}
+
+	return nil
 }
 
 func (smail *SmailClient) ListLabels() ([]string, error) {
-	r, err := smail.srv.Users.Labels.List("me").Do()
-	if err != nil {
-		log.Printf("ERROR: Failed to read labels %v", err.Error())
-	}
 
 	var labels []string
-	log.Println("There are the labels")
+	r, err := smail.srv.Users.Labels.List("me").Do()
+	if err != nil {
+		return nil, err
+	}
+
 	for _, l := range r.Labels {
-		// fmt.Printf("- %s\n", l.Name)
 		labels = append(labels, fmt.Sprintf("%s", l.Name))
 	}
 
-	log.Printf("These are the labels %v", labels)
-
-	return labels, err
+	return labels, nil
 }
 
-func (smail *SmailClient) ListMessages() {
-	r, err := smail.srv.Users.Messages.List("me").MaxResults(1).IncludeSpamTrash(true).Do()
+func (smail *SmailClient) ListMessages(nextPageToken string) (models.GmailMsg, []models.Message, error) {
+	var msgList models.GmailMsg
+	var allMessages []models.Message
+
+	r, err := smail.srv.Users.Messages.List("me").MaxResults(5).PageToken(nextPageToken).Do()
 	if err != nil {
 		log.Printf("ERROR: Failed to read messages %v", err.Error())
 	}
 
-	log.Println("These are the messages", r.Messages)
+	jsonBytes, _ := r.MarshalJSON()
+
+	err = json.Unmarshal(jsonBytes, &msgList)
+	if err != nil {
+		log.Printf("Failed to unmarshal list DATA %v", err.Error())
+	}
 
 	for _, msg := range r.Messages {
-		s, err := smail.srv.Users.Messages.Get("me", msg.Id).Do()
-		if err != nil {
-			log.Printf("ERROR: Failed to get message %v", err.Error())
-		}
 
 		newmsg := models.Message{}
-		jsonBytes, err := s.Payload.MarshalJSON()
 
+		s, err := smail.srv.Users.Messages.Get("me", msg.Id).Do()
+		if err != nil {
+			log.Printf("ERROR: Failed to fetch message %v", err.Error())
+
+		}
+
+		jsonBytes, _ := s.Payload.MarshalJSON()
 		err = json.Unmarshal(jsonBytes, &newmsg)
+
 		if err != nil {
 			log.Printf("Failed to unmarshal DATA %v", err.Error())
 		}
 
-		body := newmsg.Parts[0].Body.Data
+		for i := 0; i < len(newmsg.Parts); i++ {
+			part, _ := base64.URLEncoding.DecodeString(newmsg.Parts[i].Body.Data)
+			newmsg.Parts[i].Body.Data = string(part)
+			log.Printf("The messages %v\n", string(part))
+		}
 
-		data, _ := base64.URLEncoding.DecodeString(body)
-		html := string(data)
-		fmt.Println(html)
+		allMessages = append(allMessages, newmsg)
 
 	}
 
+	return msgList, allMessages, nil
+}
+
+func (smail *SmailClient) IndividualTrail(id string) {
+
+	s, err := smail.srv.Users.Threads.Get("me", id).Do()
+	if err != nil {
+		log.Println("Could not get thread %v", err.Error())
+	}
+
+	threadBytes, _ := s.MarshalJSON()
+	log.Println("The thread", string(threadBytes))
 }

@@ -5,8 +5,7 @@ type Message struct {
 		Size string `json:"size"`
 		Data string `json:"data"`
 	} `json:"body"`
-	Headers []Part
-
+	Headers   []Part
 	HistoryID string `json:"historyId"`
 	Parts     []struct {
 		Body     Body `json:"body"`
@@ -14,6 +13,15 @@ type Message struct {
 		MimeType string `json:"mimeType"`
 		Filename string `json:"filename"`
 	}
+}
+
+type GmailMsg struct {
+	Messages []struct {
+		ID       string `json:"id"`
+		ThreadID string `json:"threadId"`
+	}
+	NextPageToken      string `json:"nextPageToken"`
+	ResultSizeEstimate uint   `json:"resultSizeEstimate"`
 }
 
 type Body struct {
