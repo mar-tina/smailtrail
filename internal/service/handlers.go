@@ -80,5 +80,5 @@ func ProcessToken(c echo.Context) error {
 		return c.String(500, err.Error())
 	}
 
-	return c.JSON(200, m["code"].(string))
+	return c.JSON(200, "You have been successfully authenticated")
 }

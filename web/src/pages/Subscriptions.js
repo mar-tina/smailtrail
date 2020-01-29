@@ -30,6 +30,17 @@ const MiniHeader = styled.div`
   margin: 20px;
 `;
 
+const SeeMoreButton = styled.button`
+  padding: 10px;
+  color: blue;
+  background: white;
+  border: none;
+  font-size: 15px;
+  &:hover {
+    cursor: pointer;
+  }
+`;
+
 const ContentWrapper = styled.div``;
 
 const Subscriptions = () => {
@@ -37,7 +48,7 @@ const Subscriptions = () => {
   const [npToken, setnpToken] = useState("");
   const [dbkey, setdbKey] = useState("");
   const [isLoading, setLoading] = useState(false);
-  const [from, setFrom] = useState();
+  const [, setFrom] = useState();
   const [dbdata, setdbData] = useState([]);
 
   useEffect(() => {
@@ -62,6 +73,8 @@ const Subscriptions = () => {
 
     const data = result.data;
     setdbData(dbdata => [...dbdata, data]);
+    var lastelem = last(data);
+    setdbKey(lastelem.sender);
     setLoading(false);
   };
 
@@ -69,7 +82,20 @@ const Subscriptions = () => {
     fetchData();
   };
 
+  const handleDBRefetch = () => {
+    fetchFromDB();
+  };
+
+  //Last returns the last element in an array. My endpoint for fetching subscriptions is implemented using an
+  //iterator that seeks from the last key provided . On initial load it's empty.
+  var last = function last(array, n) {
+    if (array == null) return void 0;
+    if (n == null) return array[array.length - 1];
+    return array.slice(Math.max(array.length - n, 0));
+  };
+
   console.log("Msgs", msgs);
+  console.log("DBKey", dbkey);
 
   return (
     <Wrapper>
@@ -98,6 +124,8 @@ const Subscriptions = () => {
             ))}
           </div>
         ))}
+
+        <SeeMoreButton onClick={handleDBRefetch}> See More </SeeMoreButton>
       </div>
     </Wrapper>
   );

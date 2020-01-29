@@ -12,7 +12,7 @@ const Wrapper = styled.section`
 const GoogleLink = styled.a`
   text-decoration: none;
   padding: 10px;
-  color: lightblue;
+  color: blue;
 `;
 
 const InputWrapper = styled.input`
@@ -33,6 +33,7 @@ const Auth = () => {
   const [authURL, setauthURL] = useState("");
   const [isLoading, setLoading] = useState(false);
   const [authCode, setAuthcode] = useState("");
+  const [authresponse, setAuthResponse] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -46,11 +47,13 @@ const Auth = () => {
   }, []);
 
   const completeAuth = async event => {
+    setLoading(true);
     event.preventDefault();
     const res = await axios.post(`http://localhost:8000/completeauth`, {
       code: authCode
     });
-    console.log("The final res", res.data);
+    setAuthResponse(res.data);
+    setLoading(false);
   };
 
   return (
@@ -77,6 +80,10 @@ const Auth = () => {
             {" "}
             Complete Auth{" "}
           </SubmitButton>
+
+          <div>
+            {authresponse !== "" ? <div> {authresponse} </div> : <div> </div>}
+          </div>
         </div>
       )}
     </Wrapper>
