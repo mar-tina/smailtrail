@@ -2,7 +2,7 @@
 
 To run the app.
     - Clone the repositiory
-    - Go to [I'm an inline-style link](https://developers.google.com/gmail/api/quickstart/go) and click on Enable Gmail API.
+    - Go to [Google auth](https://developers.google.com/gmail/api/quickstart/go) and click on Enable Gmail API.
     - Mv The provided credentials.json file to the cmd directory in the root of the repo where the main.go is
 
 There is a backend service and a frontend service. To run the backend
