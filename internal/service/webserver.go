@@ -25,8 +25,8 @@ func StartWebServer(port string) {
 	e.GET("/labels", ListLabelsHandler)
 	e.GET("/initialauth", InitialAuth)
 	e.GET("/allmessages", ListAllMessages)
-	e.GET("/indietrail", GetIndividualTrail)
 	e.POST("/completeauth", ProcessToken)
+	e.GET("/subs", ListAllSubscriptions)
 
 	e.Logger.Fatal(e.Start(":" + port))
 }

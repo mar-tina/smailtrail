@@ -7,11 +7,9 @@ import (
 	"github.com/labstack/echo"
 	"github.com/mar-tina/smailtrail/internal/auth"
 	"github.com/mar-tina/smailtrail/internal/smailclient"
-
 )
 
 var MySmailClient smailclient.ISmailClient
-
 
 type AuthCode struct {
 	code string
@@ -43,6 +41,17 @@ func ListAllMessages(c echo.Context) error {
 	res["list"] = list
 	res["msgs"] = msgs
 	return c.JSON(200, res)
+}
+
+func ListAllSubscriptions(c echo.Context) error {
+	param := c.QueryParam("key")
+
+	subs, err := smailclient.DBClient.FetchSubscriptions(param)
+	if err != nil {
+		c.JSON(500, err)
+	}
+
+	return c.JSON(200, subs)
 }
 
 func GetIndividualTrail(c echo.Context) error {

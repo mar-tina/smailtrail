@@ -5,13 +5,10 @@ import (
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/mar-tina/smailtrail/internal/dbclient"
 	"github.com/mar-tina/smailtrail/internal/models"
 )
 
-var DBClient dbclient.IBadgerClient
-
-func LoadBody(headers []models.Part, docBody string) {
+func ParseBody(headers []models.Part, docBody string) error {
 	var unsubLink string
 	resultChannel := make(chan string)
 
@@ -48,8 +45,14 @@ func LoadBody(headers []models.Part, docBody string) {
 
 	fromVal = <-resultChannel
 
-	DBClient.SaveSubscription(unsubLink, fromVal)
-	log.Printf("From %v All the links %v", fromVal, unsubLink)
+	err = DBClient.SaveSubscription(unsubLink, fromVal)
+	if err != nil {
+		log.Printf("DB subscription save failed %v", err.Error())
+		return err
+	}
+
+	return nil
+
 }
 
 func returnSenderValue(headers []models.Part) string {
