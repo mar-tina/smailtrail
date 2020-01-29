@@ -54,7 +54,7 @@ func (bc *BadgerClient) FetchSubscriptions(key string) ([]models.Subscription, e
 	allsubs := []models.Subscription{}
 	err := bc.badgerDB.View(func(txn *badger.Txn) error {
 		opts := badger.DefaultIteratorOptions
-		opts.PrefetchSize = 10
+		opts.PrefetchSize = 30
 		it := txn.NewIterator(opts)
 		defer it.Close()
 		for it.Seek([]byte(fromVal)); it.Valid(); it.Next() {

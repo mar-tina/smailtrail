@@ -31,7 +31,7 @@ func ParseBody(headers []models.Part, docBody string) error {
 
 		//Need to find a better way to do this.
 		//FIX LATER
-		if single.Text() == "Unsubscribe" || single.Text() == "unsubscribe" || single.Text() == "UNSUBSCRIBE" || strings.Contains(single.Text(), "Manage your Notifications") || checkIfHrefContainsUnsubscribe(single.Text()) {
+		if single.Text() == "Unsubscribe" || single.Text() == "unsubscribe" || single.Text() == "UNSUBSCRIBE" || strings.Contains(single.Text(), "Manage your Notifications") || checkIfHrefContainsUnsubscribe(single) {
 
 			ret, exists := single.Attr("href")
 			if !exists {
@@ -57,8 +57,12 @@ func ParseBody(headers []models.Part, docBody string) error {
 
 }
 
-func checkIfHrefContainsUnsubscribe(href string) bool {
-	return strings.Contains(href, "unsubscribe") || strings.Contains(href, "Unsubscribe")
+func checkIfHrefContainsUnsubscribe(link *goquery.Selection) bool {
+	val, exists := link.Attr("href")
+	if exists {
+		return strings.Contains(val, "unsubscribe") || strings.Contains(val, "Unsubscribe")
+	}
+	return false
 }
 
 func returnSenderValue(headers []models.Part) string {
