@@ -7,6 +7,8 @@ const Wrapper = styled.section`
   display: grid;
   justify-content: center;
   justify-items: center;
+  align-content: center;
+  align-items: center;
 `;
 
 const GoogleLink = styled.a`
@@ -16,9 +18,12 @@ const GoogleLink = styled.a`
 `;
 
 const InputWrapper = styled.input`
+  display: grid;
+  justify-content: center;
   padding: 20px;
-  margin-top: 10px;
-  margin-bottom: 10px;
+  margin: 0 auto;
+  min-width: 250px;
+  font-size: 15px;
 `;
 
 const SubmitButton = styled.button`
@@ -26,8 +31,9 @@ const SubmitButton = styled.button`
   background: red;
   color: white;
   font-size: 15px;
-  margin-top: 20px;
 `;
+
+const BTNHolder = styled.div``;
 
 const Auth = () => {
   const [authURL, setauthURL] = useState("");
@@ -61,12 +67,16 @@ const Auth = () => {
       {isLoading ? (
         <div>Loading ...</div>
       ) : (
-        <div>
-          <p> Authenticate with google and then paste the given code below </p>
+        <>
+          <p>
+            {" "}
+            Authenticate with{" "}
+            <GoogleLink href={authURL} target="_blank">
+              Google Auth
+            </GoogleLink>{" "}
+            and then paste the given code below{" "}
+          </p>
 
-          <GoogleLink href={authURL} target="_blank">
-            Google Auth
-          </GoogleLink>
           <br />
 
           <InputWrapper
@@ -81,10 +91,10 @@ const Auth = () => {
             Complete Auth{" "}
           </SubmitButton>
 
-          <div>
+          <BTNHolder>
             {authresponse !== "" ? <div> {authresponse} </div> : <div> </div>}
-          </div>
-        </div>
+          </BTNHolder>
+        </>
       )}
     </Wrapper>
   );
