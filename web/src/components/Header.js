@@ -7,6 +7,8 @@ const HeaderWrappper = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-evenly;
+  font-size: 1.5em;
+  text-align: center;
 `;
 
 const HeaderItem = styled.div`
@@ -18,13 +20,25 @@ const Header = () => {
   return (
     <HeaderWrappper>
       <HeaderItem>
-        <Link to="/">Home</Link>
+        <Link style={{ color: "inherit", textDecoration: "inherit" }} to="/">
+          Home
+        </Link>
       </HeaderItem>
       <HeaderItem>
-        <Link to="/unsub">Subscriptions</Link>
+        <Link
+          style={{ color: "inherit", textDecoration: "inherit" }}
+          to="/unsub"
+        >
+          Subscriptions
+        </Link>
       </HeaderItem>
       <HeaderItem>
-        <Link to="/auth">Auth</Link>
+        <Link
+          style={{ color: "inherit", textDecoration: "inherit" }}
+          to="/auth"
+        >
+          Manage your Account
+        </Link>
       </HeaderItem>
     </HeaderWrappper>
   );

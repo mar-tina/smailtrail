@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import axios from "axios";
 
-const Title = styled.h1`
+const Title = styled.div`
   font-size: 1.5em;
   text-align: center;
   color: palevioletred;
@@ -10,7 +10,24 @@ const Title = styled.h1`
 
 const Wrapper = styled.section`
   padding: 2em;
-  min-height: 500px;
+  display: grid;
+  justify-content: center;
+`;
+
+const FetchMoreButton = styled.button`
+  padding: 10px;
+  font-size: 15px;
+  color: white;
+  background: lightcoral;
+  border: none;
+`;
+
+const MiniHeader = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-content: center;
+  margin: 20px;
 `;
 
 const ContentWrapper = styled.div``;
@@ -24,20 +41,20 @@ const Subscriptions = () => {
   const [dbdata, setdbData] = useState([]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      const result = await axios(
-        `http://localhost:8000/allmessages?nextpagetoken=${npToken}`
-      );
-      const data = result.data;
-      setnpToken(data.list.nextPageToken);
-
-      setMsgs(msgs => [...msgs, data.msgs]);
-      setLoading(false);
-    };
     fetchFromDB();
     fetchData();
   }, []);
+
+  const fetchData = async () => {
+    setLoading(true);
+    const result = await axios(
+      `http://localhost:8000/allmessages?nextpagetoken=${npToken}`
+    );
+    const data = result.data;
+    setnpToken(data.list.nextPageToken);
+    setMsgs(msgs => [...msgs, data.msgs]);
+    setLoading(false);
+  };
 
   const fetchFromDB = async () => {
     setLoading(true);
@@ -45,25 +62,31 @@ const Subscriptions = () => {
 
     const data = result.data;
     setdbData(dbdata => [...dbdata, data]);
+    setLoading(false);
+  };
+
+  const handleFetchMore = () => {
+    fetchData();
   };
 
   console.log("Msgs", msgs);
-  console.log("Token", npToken);
-  console.log("DBData", dbdata);
-
-  const numbers = [1, 2, 3, 4, 5];
-  const subItems = dbdata.map((number, i) => (
-    <div key={i}>{number.Sender}</div>
-  ));
 
   return (
     <Wrapper>
-      <Title> Manage your Subscriptions </Title>
+      <MiniHeader>
+        <Title> Manage your Subscriptions </Title>
+        <div>
+          <FetchMoreButton onClick={handleFetchMore}>
+            Fetch More
+          </FetchMoreButton>
+        </div>
+      </MiniHeader>
+
       <div>
-        {dbdata.map(x => (
-          <div>
-            {x.map(y => (
-              <div>
+        {dbdata.map((x, i) => (
+          <div key={i}>
+            {x.map((y, i) => (
+              <div key={i}>
                 {" "}
                 {y.sender}
                 {y.link !== "" ? (
