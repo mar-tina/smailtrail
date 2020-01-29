@@ -18,3 +18,4 @@ token.json
 /public/build/
 
 .DS_Store
+storage/

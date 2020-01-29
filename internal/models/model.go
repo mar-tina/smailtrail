@@ -1,10 +1,7 @@
 package models
 
 type Message struct {
-	Body struct {
-		Size string `json:"size"`
-		Data string `json:"data"`
-	} `json:"body"`
+	Body      Body `json:"body"`
 	Headers   []Part
 	HistoryID string `json:"historyId"`
 	Parts     []struct {
@@ -13,6 +10,11 @@ type Message struct {
 		MimeType string `json:"mimeType"`
 		Filename string `json:"filename"`
 	}
+}
+
+type Subscription struct {
+	Sender string `json:"sender"`
+	Link   string `json:"link"`
 }
 
 type GmailMsg struct {
