@@ -55,13 +55,15 @@ const Subscriptions = () => {
             msgs.map((x, i) => (
               <div key={i}>
                 {" "}
-                {x.map((y, i) => (
-                  <ContentWrapper>
-                    {y.Parts.map((element, i) => (
-                      <div key={i}>{element.body.data}</div>
-                    ))}
-                  </ContentWrapper>
-                ))}{" "}
+                {x &&
+                  x.map((y, i) => (
+                    <ContentWrapper>
+                      {y.Parts &&
+                        y.Parts.map((element, i) => (
+                          <div key={i}>{element.body.data}</div>
+                        ))}
+                    </ContentWrapper>
+                  ))}{" "}
               </div>
             ))}{" "}
         </ContentWrapper>

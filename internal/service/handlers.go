@@ -7,9 +7,11 @@ import (
 	"github.com/labstack/echo"
 	"github.com/mar-tina/smailtrail/internal/auth"
 	"github.com/mar-tina/smailtrail/internal/smailclient"
+
 )
 
 var MySmailClient smailclient.ISmailClient
+
 
 type AuthCode struct {
 	code string

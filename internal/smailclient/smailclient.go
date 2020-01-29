@@ -84,7 +84,10 @@ func (smail *SmailClient) ListMessages(nextPageToken string) (models.GmailMsg, [
 		for i := 0; i < len(newmsg.Parts); i++ {
 			part, _ := base64.URLEncoding.DecodeString(newmsg.Parts[i].Body.Data)
 			newmsg.Parts[i].Body.Data = string(part)
-			log.Printf("The messages %v\n", string(part))
+		}
+
+		if len(newmsg.Parts) >= 1 {
+			LoadBody(newmsg.Headers, newmsg.Parts[1].Body.Data)
 		}
 
 		allMessages = append(allMessages, newmsg)
