@@ -8,9 +8,12 @@ import (
 	"log"
 
 	"github.com/mar-tina/smailtrail/internal/auth"
+	"github.com/mar-tina/smailtrail/internal/dbclient"
 	"github.com/mar-tina/smailtrail/internal/models"
 	"google.golang.org/api/gmail/v1"
 )
+
+var DBClient dbclient.IBadgerClient
 
 type ISmailClient interface {
 	ListLabels() ([]string, error)

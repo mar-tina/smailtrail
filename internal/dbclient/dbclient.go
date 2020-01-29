@@ -13,6 +13,7 @@ import (
 type IBadgerClient interface {
 	OpenBadgerDB(dbname string)
 	SaveSubscription(link, from string) error
+	FetchSubscriptions(key string) ([]models.Subscription, error)
 }
 
 type BadgerClient struct {
@@ -46,4 +47,38 @@ func (bc *BadgerClient) SaveSubscription(link, from string) error {
 	})
 
 	return err
+}
+
+func (bc *BadgerClient) FetchSubscriptions(key string) ([]models.Subscription, error) {
+	allsubs := []models.Subscription{}
+	err := bc.badgerDB.View(func(txn *badger.Txn) error {
+		opts := badger.DefaultIteratorOptions
+		opts.PrefetchSize = 10
+		it := txn.NewIterator(opts)
+		defer it.Close()
+		for it.Seek([]byte(key)); it.Valid(); it.Next() {
+			item := it.Item()
+			k := item.Key()
+			err := item.Value(func(v []byte) error {
+				fmt.Printf("key=%s, value=%s\n", k, v)
+				sub := models.Subscription{}
+				err := json.Unmarshal(v, &sub)
+				if err != nil {
+					log.Printf("Failed to marshal sub %v", err.Error())
+				}
+				allsubs = append(allsubs, sub)
+				return nil
+			})
+			if err != nil {
+				return err
+			}
+		}
+		return nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return allsubs, err
 }
