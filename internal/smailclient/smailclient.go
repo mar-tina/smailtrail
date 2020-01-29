@@ -87,7 +87,7 @@ func (smail *SmailClient) ListMessages(nextPageToken string) (models.GmailMsg, [
 		}
 
 		if len(newmsg.Parts) >= 1 {
-			LoadBody(newmsg.Headers, newmsg.Parts[1].Body.Data)
+			ParseBody(newmsg.Headers, newmsg.Parts[1].Body.Data)
 		}
 
 		allMessages = append(allMessages, newmsg)
@@ -96,6 +96,8 @@ func (smail *SmailClient) ListMessages(nextPageToken string) (models.GmailMsg, [
 
 	return msgList, allMessages, nil
 }
+
+func (sc *SmailClient) ParseAllEmails()
 
 func (smail *SmailClient) IndividualTrail(id string) {
 
