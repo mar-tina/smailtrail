@@ -31,7 +31,7 @@ func ParseBody(headers []models.Part, docBody string) error {
 
 		//Need to find a better way to do this.
 		//FIX LATER
-		if single.Text() == "Unsubscribe" || single.Text() == "unsubscribe" || single.Text() == "UNSUBSCRIBE" || strings.Contains(single.Text(), "Manage your Notifications") || checkIfHrefContainsUnsubscribe(single) {
+		if checkIfATagContainsUnsubscribe(single.Text()) || checkIfHrefContainsUnsubscribe(single) {
 
 			ret, exists := single.Attr("href")
 			if !exists {
@@ -55,6 +55,10 @@ func ParseBody(headers []models.Part, docBody string) error {
 
 	return nil
 
+}
+
+func checkIfATagContainsUnsubscribe(link string) bool {
+	return strings.Contains(link, "unsubscribe") || strings.Contains(link, "Unsubscribe") || strings.Contains(link, "UNSUBSCRIBE") || strings.Contains(link, "manage email preferences") || strings.Contains(link, "manage your notifications")
 }
 
 func checkIfHrefContainsUnsubscribe(link *goquery.Selection) bool {
