@@ -29,7 +29,7 @@ func ParseBody(headers []models.Part, docBody string) error {
 	for i := range links.Nodes {
 		single := links.Eq(i)
 
-		if single.Text() == "Unsubscribe" || single.Text() == "unsubscribe" {
+		if single.Text() == "Unsubscribe" || single.Text() == "unsubscribe" || single.Text() == "UNSUBSCRIBE" {
 
 			ret, exists := single.Attr("href")
 			if !exists {

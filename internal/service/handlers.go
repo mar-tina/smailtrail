@@ -44,7 +44,7 @@ func ListAllMessages(c echo.Context) error {
 }
 
 func ListAllSubscriptions(c echo.Context) error {
-	param := c.QueryParam("key")
+	param := c.QueryParam("dbkey")
 
 	subs, err := smailclient.DBClient.FetchSubscriptions(param)
 	if err != nil {

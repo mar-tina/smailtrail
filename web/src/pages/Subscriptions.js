@@ -13,19 +13,15 @@ const Wrapper = styled.section`
   min-height: 500px;
 `;
 
-const ContentWrapper = styled.div`
-  min-height: 500px;
-`;
-
-const Content = styled.div`
-  min-height: 100px;
-`;
+const ContentWrapper = styled.div``;
 
 const Subscriptions = () => {
   const [msgs, setMsgs] = useState([]);
   const [npToken, setnpToken] = useState("");
+  const [dbkey, setdbKey] = useState("");
   const [isLoading, setLoading] = useState(false);
   const [from, setFrom] = useState();
+  const [dbdata, setdbData] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -34,40 +30,52 @@ const Subscriptions = () => {
         `http://localhost:8000/allmessages?nextpagetoken=${npToken}`
       );
       const data = result.data;
+      setnpToken(data.list.nextPageToken);
+
       setMsgs(msgs => [...msgs, data.msgs]);
       setLoading(false);
     };
+    fetchFromDB();
     fetchData();
   }, []);
 
-  console.log("WTF", msgs);
+  const fetchFromDB = async () => {
+    setLoading(true);
+    const result = await axios(`http://localhost:8000/subs?dbkey=${dbkey}`);
+
+    const data = result.data;
+    setdbData(dbdata => [...dbdata, data]);
+  };
+
+  console.log("Msgs", msgs);
+  console.log("Token", npToken);
+  console.log("DBData", dbdata);
+
+  const numbers = [1, 2, 3, 4, 5];
+  const subItems = dbdata.map((number, i) => (
+    <div key={i}>{number.Sender}</div>
+  ));
 
   return (
     <Wrapper>
-      {" "}
       <Title> Manage your Subscriptions </Title>
-      {isLoading ? (
-        <div> Loadding ... </div>
-      ) : (
-        <ContentWrapper>
-          {" "}
-          {msgs &&
-            msgs.map((x, i) => (
-              <div key={i}>
+      <div>
+        {dbdata.map(x => (
+          <div>
+            {x.map(y => (
+              <div>
                 {" "}
-                {x &&
-                  x.map((y, i) => (
-                    <ContentWrapper>
-                      {y.Parts &&
-                        y.Parts.map((element, i) => (
-                          <div key={i}>{element.body.data}</div>
-                        ))}
-                    </ContentWrapper>
-                  ))}{" "}
+                {y.sender}
+                {y.link !== "" ? (
+                  <a href={y.link}> Unsub </a>
+                ) : (
+                  <a href={y.link}> Missing Link </a>
+                )}
               </div>
-            ))}{" "}
-        </ContentWrapper>
-      )}
+            ))}
+          </div>
+        ))}
+      </div>
     </Wrapper>
   );
 };
