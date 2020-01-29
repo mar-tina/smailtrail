@@ -50,13 +50,14 @@ func (bc *BadgerClient) SaveSubscription(link, from string) error {
 }
 
 func (bc *BadgerClient) FetchSubscriptions(key string) ([]models.Subscription, error) {
+	fromVal := strings.Replace(strings.Split(key, "<")[0], " ", "", -1)
 	allsubs := []models.Subscription{}
 	err := bc.badgerDB.View(func(txn *badger.Txn) error {
 		opts := badger.DefaultIteratorOptions
 		opts.PrefetchSize = 10
 		it := txn.NewIterator(opts)
 		defer it.Close()
-		for it.Seek([]byte(key)); it.Valid(); it.Next() {
+		for it.Seek([]byte(fromVal)); it.Valid(); it.Next() {
 			item := it.Item()
 			k := item.Key()
 			err := item.Value(func(v []byte) error {

@@ -100,8 +100,6 @@ func (smail *SmailClient) ListMessages(nextPageToken string) (models.GmailMsg, [
 	return msgList, allMessages, nil
 }
 
-func (sc *SmailClient) ParseAllEmails()
-
 func (smail *SmailClient) IndividualTrail(id string) {
 
 	s, err := smail.srv.Users.Threads.Get("me", id).Do()
