@@ -25,6 +25,7 @@ const Subscriptions = () => {
   const [msgs, setMsgs] = useState([]);
   const [npToken, setnpToken] = useState("");
   const [isLoading, setLoading] = useState(false);
+  const [from, setFrom] = useState();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -44,7 +45,7 @@ const Subscriptions = () => {
   return (
     <Wrapper>
       {" "}
-      {/* <Title> Manage your Subscriptions </Title> */}
+      <Title> Manage your Subscriptions </Title>
       {isLoading ? (
         <div> Loadding ... </div>
       ) : (
@@ -55,13 +56,11 @@ const Subscriptions = () => {
               <div key={i}>
                 {" "}
                 {x.map((y, i) => (
-                  <div>
-                    {console.log("The y", y.Parts)}
-                    {y.Parts &&
-                      y.Parts.forEach((element, i) => (
-                        <div key={i}> Why no print data {element} </div>
-                      ))}
-                  </div>
+                  <ContentWrapper>
+                    {y.Parts.map((element, i) => (
+                      <div key={i}>{element.body.data}</div>
+                    ))}
+                  </ContentWrapper>
                 ))}{" "}
               </div>
             ))}{" "}
