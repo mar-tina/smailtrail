@@ -3,7 +3,6 @@ import { useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
 import axios from "axios";
 
-
 const Title = styled.div`
   font-size: 1.2em;
   text-align: center;
@@ -78,7 +77,6 @@ const Subscriptions = () => {
     setLoading(true);
     let newskip = skip + take;
     setSkip(newskip);
-    console.log("New skip", skip)
     const result = await axios(
       `http://localhost:8000/subs?take=${take}&skip=${skip}`
     );
@@ -125,7 +123,10 @@ const Subscriptions = () => {
                 ) : (
                   <a href={y.link}> Missing Link </a>
                 )}
-                <p>{y.date}</p>
+                <p>
+                  {" "}
+                  <strong> Latest Contact: </strong> {y.date}
+                </p>
               </ContentHolder>
             ))}
           </div>

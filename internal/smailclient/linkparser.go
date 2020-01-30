@@ -63,13 +63,13 @@ func ParseBody(headers []models.Part, docBody string) error {
 }
 
 func checkIfATagContainsUnsubscribe(link string) bool {
-	return strings.Contains(link, "unsubscribe") || strings.Contains(link, "manage email preferences") || strings.Contains(link, "manage your notifications") || strings.Contains(link, "manage your email settings") || strings.Contains(link, "email subscription preferences")
+	return strings.Contains(link, "unsubscribe") || strings.Contains(link, "manage email preferences") || strings.Contains(link, "manage your notifications") || strings.Contains(link, "manage your email settings") || strings.Contains(link, "email subscription preferences") || strings.Contains(link, "communication settings")
 }
 
 func checkIfHrefContainsUnsubscribe(link *goquery.Selection) bool {
 	val, exists := link.Attr("href")
 	if exists {
-		return strings.Contains(val, "unsubscribe") || strings.Contains(val, "Unsubscribe")
+		return strings.Contains(strings.ToLower(val), "unsubscribe")
 	}
 	return false
 }
