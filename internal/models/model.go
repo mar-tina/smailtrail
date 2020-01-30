@@ -17,6 +17,12 @@ type Subscription struct {
 	Link   string `json:"link"`
 }
 
+type Sub struct {
+	ID     string `json:"id"`
+	Sender string `json:"sender"`
+	Link   string `json:"link"`
+}
+
 type GmailMsg struct {
 	Messages []struct {
 		ID       string `json:"id"`

@@ -9,7 +9,8 @@ import (
 func main() {
 
 	initSmailClient()
-	initDatabase()
+	// initDatabase()
+	initStormDB()
 
 	service.StartWebServer("8000")
 }
@@ -21,4 +22,9 @@ func initSmailClient() {
 func initDatabase() {
 	smailclient.DBClient = &dbclient.BadgerClient{}
 	smailclient.DBClient.OpenBadgerDB("./storage")
+}
+
+func initStormDB() {
+	smailclient.StormDBClient = &dbclient.StormClient{}
+	smailclient.StormDBClient.OpenStormDB("smailtrail.db")
 }

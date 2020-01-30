@@ -6,6 +6,7 @@ import (
 	"log"
 	"strings"
 
+	"github.com/asdine/storm"
 	"github.com/dgraph-io/badger"
 	"github.com/mar-tina/smailtrail/internal/models"
 )
@@ -16,8 +17,18 @@ type IBadgerClient interface {
 	FetchSubscriptions(key string) ([]models.Subscription, error)
 }
 
+type IStormClient interface {
+	OpenStormDB(dbname string)
+	SaveSubscription(link, from string) error
+	FetchSubscriptions(take, limit int) ([]models.Sub, error)
+}
+
 type BadgerClient struct {
 	badgerDB *badger.DB
+}
+
+type StormClient struct {
+	stormDB *storm.DB
 }
 
 func (bc *BadgerClient) OpenBadgerDB(dbname string) {
@@ -82,4 +93,40 @@ func (bc *BadgerClient) FetchSubscriptions(key string) ([]models.Subscription, e
 	}
 
 	return allsubs, err
+}
+
+func (sc *StormClient) OpenStormDB(dbname string) {
+	var err error
+	sc.stormDB, err = storm.Open(dbname)
+	if err != nil {
+		log.Printf("DB Failed to open %v", err.Error())
+	}
+
+	log.Printf("DB setup Done")
+}
+
+func (sc *StormClient) SaveSubscription(link, from string) error {
+	subID := strings.Replace(strings.Split(from, "<")[0], " ", "", -1)
+	sub := models.Sub{
+		ID:     subID,
+		Sender: from,
+		Link:   link,
+	}
+
+	err := sc.stormDB.Save(&sub)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (sc *StormClient) FetchSubscriptions(take, skip int) ([]models.Sub, error) {
+	var subs []models.Sub
+	err := sc.stormDB.All(&subs, storm.Limit(take), storm.Skip(skip))
+	if err != nil {
+		return nil, err
+	}
+
+	return subs, err
 }

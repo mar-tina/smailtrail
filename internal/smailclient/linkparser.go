@@ -31,7 +31,7 @@ func ParseBody(headers []models.Part, docBody string) error {
 
 		//Need to find a better way to do this.
 		//FIX LATER
-		if checkIfATagContainsUnsubscribe(single.Text()) || checkIfHrefContainsUnsubscribe(single) {
+		if checkIfATagContainsUnsubscribe(strings.ToLower(single.Text())) || checkIfHrefContainsUnsubscribe(single) {
 
 			ret, exists := single.Attr("href")
 			if !exists {
@@ -47,7 +47,7 @@ func ParseBody(headers []models.Part, docBody string) error {
 
 	fromVal = <-resultChannel
 
-	err = DBClient.SaveSubscription(unsubLink, fromVal)
+	err = StormDBClient.SaveSubscription(unsubLink, fromVal)
 	if err != nil {
 		log.Printf("DB subscription save failed %v", err.Error())
 		return err
@@ -58,7 +58,7 @@ func ParseBody(headers []models.Part, docBody string) error {
 }
 
 func checkIfATagContainsUnsubscribe(link string) bool {
-	return strings.Contains(link, "unsubscribe") || strings.Contains(link, "Unsubscribe") || strings.Contains(link, "UNSUBSCRIBE") || strings.Contains(link, "manage email preferences") || strings.Contains(link, "manage your notifications")
+	return strings.Contains(link, "unsubscribe") || strings.Contains(link, "manage email preferences") || strings.Contains(link, "manage your notifications") || strings.Contains(link, "manage your email settings")
 }
 
 func checkIfHrefContainsUnsubscribe(link *goquery.Selection) bool {

@@ -46,10 +46,11 @@ const ContentWrapper = styled.div``;
 const Subscriptions = () => {
   const [msgs, setMsgs] = useState([]);
   const [npToken, setnpToken] = useState("");
-  const [dbkey, setdbKey] = useState("");
   const [isLoading, setLoading] = useState(false);
-  const [, setFrom] = useState();
   const [dbdata, setdbData] = useState([]);
+  const [skip, setSkip] = useState(0);
+
+  let take = 10;
 
   useEffect(() => {
     fetchFromDB();
@@ -69,12 +70,13 @@ const Subscriptions = () => {
 
   const fetchFromDB = async () => {
     setLoading(true);
-    const result = await axios(`http://localhost:8000/subs?dbkey=${dbkey}`);
+    const result = await axios(
+      `http://localhost:8000/subs?take=${take}&skip=${skip}`
+    );
 
     const data = result.data;
     setdbData(dbdata => [...dbdata, data]);
-    var lastelem = last(data);
-    setdbKey(lastelem.sender);
+
     setLoading(false);
   };
 
@@ -83,19 +85,12 @@ const Subscriptions = () => {
   };
 
   const handleDBRefetch = () => {
+    let newskip = skip + take;
+    setSkip(newskip);
     fetchFromDB();
   };
 
-  //Last returns the last element in an array. My endpoint for fetching subscriptions is implemented using an
-  //iterator that seeks from the last key provided . On initial load it's empty.
-  var last = function last(array, n) {
-    if (array == null) return void 0;
-    if (n == null) return array[array.length - 1];
-    return array.slice(Math.max(array.length - n, 0));
-  };
-
   console.log("Msgs", msgs);
-  console.log("DBKey", dbkey);
 
   return (
     <Wrapper>
