@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
+import { useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
 import axios from "axios";
+
 
 const Title = styled.div`
   font-size: 1.2em;
@@ -42,7 +44,7 @@ const SeeMoreButton = styled.button`
 `;
 
 const ContentHolder = styled.div`
-  padding: 30px;
+  padding: 20px;
 `;
 
 const Subscriptions = () => {
@@ -52,7 +54,9 @@ const Subscriptions = () => {
   const [dbdata, setdbData] = useState([]);
   const [skip, setSkip] = useState(0);
 
-  let take = 10;
+  let take = 5;
+
+  let { path, url } = useRouteMatch();
 
   useEffect(() => {
     fetchFromDB();
@@ -72,6 +76,9 @@ const Subscriptions = () => {
 
   const fetchFromDB = async () => {
     setLoading(true);
+    let newskip = skip + take;
+    setSkip(newskip);
+    console.log("New skip", skip)
     const result = await axios(
       `http://localhost:8000/subs?take=${take}&skip=${skip}`
     );
@@ -86,12 +93,10 @@ const Subscriptions = () => {
     fetchData();
   };
 
-  const handleDBRefetch = () => {
-    if (dbdata.length < 10) {
-      return;
-    }
+  const handleDBRefetch = async () => {
     let newskip = skip + take;
     setSkip(newskip);
+    // console.log("skip value", skip);
     fetchFromDB();
   };
 
