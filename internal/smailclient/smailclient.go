@@ -14,6 +14,7 @@ import (
 )
 
 var DBClient dbclient.IBadgerClient
+var StormDBClient dbclient.IStormClient
 
 type ISmailClient interface {
 	ListLabels() ([]string, error)

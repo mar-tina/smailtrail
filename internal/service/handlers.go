@@ -3,6 +3,7 @@ package service
 import (
 	"encoding/json"
 	"log"
+	"strconv"
 
 	"github.com/labstack/echo"
 	"github.com/mar-tina/smailtrail/internal/auth"
@@ -44,11 +45,15 @@ func ListAllMessages(c echo.Context) error {
 }
 
 func ListAllSubscriptions(c echo.Context) error {
-	param := c.QueryParam("dbkey")
-
-	subs, err := smailclient.DBClient.FetchSubscriptions(param)
+	take, err := strconv.Atoi(c.QueryParam("take"))
+	skip, err := strconv.Atoi(c.QueryParam("skip"))
 	if err != nil {
-		c.JSON(500, err)
+		c.JSON(500, "Something went wrong")
+	}
+
+	subs, err := smailclient.StormDBClient.FetchSubscriptions(take, skip)
+	if err != nil {
+		c.JSON(500, "Something went wrong")
 	}
 
 	return c.JSON(200, subs)
