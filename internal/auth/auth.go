@@ -63,20 +63,22 @@ func Authorize(configFile, authcode string) *gmail.Service {
 }
 
 //Processing Auth through http function helpers
-func GetAuthURL(configFile string) string {
+func GetAuthURL(configFile string) (string, error) {
 	b, err := ioutil.ReadFile(configFile)
 	if err != nil {
 		log.Fatalf("Unable to read client secret file %v", err)
+		return "", err
 	}
 
 	GmailConfig, err := google.ConfigFromJSON(b, gmail.GmailReadonlyScope, gmail.GmailComposeScope)
 	if err != nil {
 		log.Fatalf("Unable to parse client secret %v", err)
+		return "", err
 	}
 
 	authURL := GmailConfig.AuthCodeURL("state-token", oauth2.AccessTypeOffline)
 
-	return authURL
+	return authURL, nil
 
 }
 

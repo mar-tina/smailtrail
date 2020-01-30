@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
 import axios from "axios";
-
+import { ReactComponent as LoadingLogo } from "./loading.svg";
 
 const Title = styled.div`
   font-size: 1.2em;
@@ -17,18 +17,21 @@ const Wrapper = styled.section`
 `;
 
 const FetchMoreButton = styled.button`
-  padding: 10px;
+  padding: 15px;
   font-size: 15px;
   color: white;
   background: lightcoral;
   border: none;
+  font-family: "Courier New", Courier, monospace;
+  font-weight: 600;
 `;
 
 const MiniHeader = styled.div`
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: space-evenly;
   align-content: center;
+  align-items: center;
   margin: 20px;
 `;
 
@@ -45,18 +48,21 @@ const SeeMoreButton = styled.button`
 
 const ContentHolder = styled.div`
   padding: 20px;
+  border-left: 3px solid black;
+  margin: 15px;
+`;
+
+const MainContent = styled.div`
+  max-width: 900px;
 `;
 
 const Subscriptions = () => {
-  const [msgs, setMsgs] = useState([]);
   const [npToken, setnpToken] = useState("");
   const [isLoading, setLoading] = useState(false);
   const [dbdata, setdbData] = useState([]);
   const [skip, setSkip] = useState(0);
 
   let take = 5;
-
-  let { path, url } = useRouteMatch();
 
   useEffect(() => {
     fetchFromDB();
@@ -70,7 +76,6 @@ const Subscriptions = () => {
     );
     const data = result.data;
     setnpToken(data.list.nextPageToken);
-    setMsgs(msgs => [...msgs, data.msgs]);
     setLoading(false);
   };
 
@@ -78,7 +83,6 @@ const Subscriptions = () => {
     setLoading(true);
     let newskip = skip + take;
     setSkip(newskip);
-    console.log("New skip", skip)
     const result = await axios(
       `http://localhost:8000/subs?take=${take}&skip=${skip}`
     );
@@ -94,26 +98,38 @@ const Subscriptions = () => {
   };
 
   const handleDBRefetch = async () => {
-    let newskip = skip + take;
-    setSkip(newskip);
-    // console.log("skip value", skip);
     fetchFromDB();
   };
-
-  console.log("Msgs", msgs);
 
   return (
     <Wrapper>
       <MiniHeader>
         <Title> Manage your Subscriptions </Title>
-        <div>
+        <div
+          style={{
+            display: "grid",
+            gridGap: "30px",
+            gridTemplateColumns: "2fr 1fr"
+          }}
+        >
           <FetchMoreButton onClick={handleFetchMore}>
-            Fetch More
+            Fetch More From API
           </FetchMoreButton>
+
+          <div>
+            {isLoading ? (
+              <div style={{ display: "grid" }}>
+                {" "}
+                <LoadingLogo /> <span> Loading ... </span>{" "}
+              </div>
+            ) : (
+              <span></span>
+            )}
+          </div>
         </div>
       </MiniHeader>
 
-      <div>
+      <MainContent>
         {dbdata.map((x, i) => (
           <div key={i}>
             {x.map((y, i) => (
@@ -125,14 +141,17 @@ const Subscriptions = () => {
                 ) : (
                   <a href={y.link}> Missing Link </a>
                 )}
-                <p>{y.date}</p>
+                <p>
+                  {" "}
+                  <strong> Latest Contact: </strong> {y.date}
+                </p>
               </ContentHolder>
             ))}
           </div>
         ))}
 
         <SeeMoreButton onClick={handleDBRefetch}> See More </SeeMoreButton>
-      </div>
+      </MainContent>
     </Wrapper>
   );
 };

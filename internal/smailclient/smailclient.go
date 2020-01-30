@@ -13,14 +13,12 @@ import (
 	"google.golang.org/api/gmail/v1"
 )
 
-var DBClient dbclient.IBadgerClient
 var StormDBClient dbclient.IStormClient
 
 type ISmailClient interface {
 	ListLabels() ([]string, error)
-	ListMessages(nextPageToken string) (models.GmailMsg, []models.Message, error)
+	ListMessages(nextPageToken string) (models.GmailMsg, error)
 	InitSmailClient(credFile, authcode string) error
-	IndividualTrail(id string)
 }
 
 type SmailClient struct {
@@ -52,11 +50,11 @@ func (smail *SmailClient) ListLabels() ([]string, error) {
 	return labels, nil
 }
 
-func (smail *SmailClient) ListMessages(nextPageToken string) (models.GmailMsg, []models.Message, error) {
+func (smail *SmailClient) ListMessages(nextPageToken string) (models.GmailMsg, error) {
 	var msgList models.GmailMsg
 	var allMessages []models.Message
 
-	r, err := smail.srv.Users.Messages.List("me").MaxResults(5).PageToken(nextPageToken).Do()
+	r, err := smail.srv.Users.Messages.List("me").MaxResults(50).PageToken(nextPageToken).Do()
 	if err != nil {
 		log.Printf("ERROR: Failed to read messages %v", err.Error())
 	}
@@ -98,16 +96,5 @@ func (smail *SmailClient) ListMessages(nextPageToken string) (models.GmailMsg, [
 
 	}
 
-	return msgList, allMessages, nil
-}
-
-func (smail *SmailClient) IndividualTrail(id string) {
-
-	s, err := smail.srv.Users.Threads.Get("me", id).Do()
-	if err != nil {
-		log.Println("Could not get thread %v", err.Error())
-	}
-
-	threadBytes, _ := s.MarshalJSON()
-	log.Println("The thread", string(threadBytes))
+	return msgList, nil
 }

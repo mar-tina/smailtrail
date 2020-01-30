@@ -31,7 +31,7 @@ func ListAllMessages(c echo.Context) error {
 
 	tokparam := c.QueryParam("nextpagetoken")
 
-	list, msgs, err := MySmailClient.ListMessages(tokparam)
+	list, err := MySmailClient.ListMessages(tokparam)
 	if err != nil {
 		return c.String(500, err.Error())
 	}
@@ -40,7 +40,6 @@ func ListAllMessages(c echo.Context) error {
 	res = make(map[string]interface{}, 2)
 
 	res["list"] = list
-	res["msgs"] = msgs
 	return c.JSON(200, res)
 }
 
@@ -59,14 +58,19 @@ func ListAllSubscriptions(c echo.Context) error {
 	return c.JSON(200, subs)
 }
 
-func GetIndividualTrail(c echo.Context) error {
-	threadID := c.QueryParam("threadId")
-	MySmailClient.IndividualTrail(threadID)
-	return c.JSON(200, "working")
-}
-
 func InitialAuth(c echo.Context) error {
-	authURL := auth.GetAuthURL("credentials.json")
+	authURL, err := auth.GetAuthURL("credentials.json")
+	message := struct {
+		Message string
+		err     error
+	}{
+		"Something went wrong. Make sure you have the credentials.json file",
+		err,
+	}
+	if err != nil {
+		return c.JSON(500, message)
+	}
+
 	jsonBytes, _ := json.Marshal(authURL)
 	return c.String(200, string(jsonBytes))
 }
