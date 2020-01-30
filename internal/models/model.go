@@ -21,6 +21,7 @@ type Sub struct {
 	ID     string `json:"id"`
 	Sender string `json:"sender"`
 	Link   string `json:"link"`
+	Date   string `json:"date"`
 }
 
 type GmailMsg struct {
