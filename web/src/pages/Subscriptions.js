@@ -16,11 +16,13 @@ const Wrapper = styled.section`
 `;
 
 const FetchMoreButton = styled.button`
-  padding: 10px;
+  padding: 15px;
   font-size: 15px;
   color: white;
   background: lightcoral;
   border: none;
+  font-family: "Courier New", Courier, monospace;
+  font-weight: 600;
 `;
 
 const MiniHeader = styled.div`
@@ -28,6 +30,7 @@ const MiniHeader = styled.div`
   flex-wrap: wrap;
   justify-content: space-between;
   align-content: center;
+  align-items: center;
   margin: 20px;
 `;
 
@@ -106,7 +109,7 @@ const Subscriptions = () => {
         <Title> Manage your Subscriptions </Title>
         <div>
           <FetchMoreButton onClick={handleFetchMore}>
-            Fetch More
+            Fetch More From API
           </FetchMoreButton>
         </div>
       </MiniHeader>

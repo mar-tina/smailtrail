@@ -13,7 +13,6 @@ import (
 	"google.golang.org/api/gmail/v1"
 )
 
-var DBClient dbclient.IBadgerClient
 var StormDBClient dbclient.IStormClient
 
 type ISmailClient interface {
