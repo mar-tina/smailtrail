@@ -29,7 +29,7 @@ const FetchMoreButton = styled.button`
 const MiniHeader = styled.div`
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
+  justify-content: space-evenly;
   align-content: center;
   align-items: center;
   margin: 20px;
@@ -52,16 +52,17 @@ const ContentHolder = styled.div`
   margin: 15px;
 `;
 
+const MainContent = styled.div`
+  max-width: 900px;
+`;
+
 const Subscriptions = () => {
-  const [msgs, setMsgs] = useState([]);
   const [npToken, setnpToken] = useState("");
   const [isLoading, setLoading] = useState(false);
   const [dbdata, setdbData] = useState([]);
   const [skip, setSkip] = useState(0);
 
   let take = 5;
-
-  let { path, url } = useRouteMatch();
 
   useEffect(() => {
     fetchFromDB();
@@ -75,7 +76,6 @@ const Subscriptions = () => {
     );
     const data = result.data;
     setnpToken(data.list.nextPageToken);
-    setMsgs(msgs => [...msgs, data.msgs]);
     setLoading(false);
   };
 
@@ -98,28 +98,38 @@ const Subscriptions = () => {
   };
 
   const handleDBRefetch = async () => {
-    let newskip = skip + take;
-    setSkip(newskip);
-    // console.log("skip value", skip);
     fetchFromDB();
   };
-
-  console.log("Msgs", msgs);
 
   return (
     <Wrapper>
       <MiniHeader>
         <Title> Manage your Subscriptions </Title>
-        <div>
+        <div
+          style={{
+            display: "grid",
+            gridGap: "30px",
+            gridTemplateColumns: "2fr 1fr"
+          }}
+        >
           <FetchMoreButton onClick={handleFetchMore}>
             Fetch More From API
           </FetchMoreButton>
 
-          {isLoading ? <LoadingLogo /> : <span></span>}
+          <div>
+            {isLoading ? (
+              <div style={{ display: "grid" }}>
+                {" "}
+                <LoadingLogo /> <span> Loading ... </span>{" "}
+              </div>
+            ) : (
+              <span></span>
+            )}
+          </div>
         </div>
       </MiniHeader>
 
-      <div>
+      <MainContent>
         {dbdata.map((x, i) => (
           <div key={i}>
             {x.map((y, i) => (
@@ -141,7 +151,7 @@ const Subscriptions = () => {
         ))}
 
         <SeeMoreButton onClick={handleDBRefetch}> See More </SeeMoreButton>
-      </div>
+      </MainContent>
     </Wrapper>
   );
 };

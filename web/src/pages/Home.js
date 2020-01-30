@@ -5,7 +5,9 @@ import { ReactComponent as ParseLogo } from "./parse.svg";
 import { ReactComponent as UnsubLogo } from "./unsub.svg";
 
 const Wrapper = styled.div`
-  padding: 30px;
+  padding-left: 90px;
+  padding-right: 90px;
+  padding-top: 30px;
 `;
 const Title = styled.div`
   font-size: 1.2em;
@@ -38,14 +40,14 @@ const Home = () => {
       <ContentWrapper>
         <DescriptionWrapper>
           <FetchLogo />
-          <Para> Fetch your emails per page </Para>
+          <Para> Fetch your emails per page. </Para>
         </DescriptionWrapper>
 
         <DescriptionWrapper>
           <ParseLogo />
           <Para>
             Only take what is required and since this app is run using your
-            personal credentials.json No one else will ever see your data
+            personal credentials.json No one else will ever see your data.
           </Para>
         </DescriptionWrapper>
         <DescriptionWrapper>
@@ -53,7 +55,7 @@ const Home = () => {
           <Para>
             {" "}
             After parsing the necessary elements you are provided with a one
-            click unsubscribe option
+            click unsubscribe option.
           </Para>
         </DescriptionWrapper>
       </ContentWrapper>
