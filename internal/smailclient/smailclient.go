@@ -56,7 +56,7 @@ func (smail *SmailClient) ListMessages(nextPageToken string) (models.GmailMsg, [
 	var msgList models.GmailMsg
 	var allMessages []models.Message
 
-	r, err := smail.srv.Users.Messages.List("me").MaxResults(5).PageToken(nextPageToken).Do()
+	r, err := smail.srv.Users.Messages.List("me").MaxResults(50).PageToken(nextPageToken).Do()
 	if err != nil {
 		log.Printf("ERROR: Failed to read messages %v", err.Error())
 	}
