@@ -9,10 +9,10 @@ There is a backend service and a frontend service. To run the backend
 
 To run the frontend
 
-    ``` cd web ```
-    Install the dependencies...
-    ``` yarn | yarn install ```
-    ``` yarn start ```
+    - cd web
+    - Install the dependencies...
+    - yarn | yarn install
+    - yarn start
 
 The main functionality of the app is to fetch Gmail Messages. Parse the body and extract the unsubscribe link from the body text.
 
