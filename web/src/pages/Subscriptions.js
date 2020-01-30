@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
 import axios from "axios";
+import { ReactComponent as LoadingLogo } from "./loading.svg";
 
 const Title = styled.div`
   font-size: 1.2em;
@@ -47,6 +48,8 @@ const SeeMoreButton = styled.button`
 
 const ContentHolder = styled.div`
   padding: 20px;
+  border-left: 3px solid black;
+  margin: 15px;
 `;
 
 const Subscriptions = () => {
@@ -111,6 +114,8 @@ const Subscriptions = () => {
           <FetchMoreButton onClick={handleFetchMore}>
             Fetch More From API
           </FetchMoreButton>
+
+          {isLoading ? <LoadingLogo /> : <span></span>}
         </div>
       </MiniHeader>
 

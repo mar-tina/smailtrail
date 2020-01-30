@@ -59,14 +59,18 @@ func ListAllSubscriptions(c echo.Context) error {
 	return c.JSON(200, subs)
 }
 
-func GetIndividualTrail(c echo.Context) error {
-	threadID := c.QueryParam("threadId")
-	MySmailClient.IndividualTrail(threadID)
-	return c.JSON(200, "working")
-}
-
 func InitialAuth(c echo.Context) error {
-	authURL := auth.GetAuthURL("credentials.json")
+	authURL, err := auth.GetAuthURL("credentials.json")
+	message := struct {
+		Message string
+		err     error
+	}{
+		"Something went wrong. Make sure you have the credentials.json file",
+		err,
+	}
+	if err != nil {
+		return c.JSON(500, message)
+	}
 	jsonBytes, _ := json.Marshal(authURL)
 	return c.String(200, string(jsonBytes))
 }

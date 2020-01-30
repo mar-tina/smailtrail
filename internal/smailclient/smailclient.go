@@ -51,7 +51,7 @@ func (smail *SmailClient) ListLabels() ([]string, error) {
 	return labels, nil
 }
 
-func (smail *SmailClient) ListMessages(nextPageToken string) (models.GmailMsg, []models.Message, error) {
+func (smail *SmailClient) ListMessages(nextPageToken string) (models.GmailMsg, error) {
 	var msgList models.GmailMsg
 	var allMessages []models.Message
 
@@ -97,16 +97,5 @@ func (smail *SmailClient) ListMessages(nextPageToken string) (models.GmailMsg, [
 
 	}
 
-	return msgList, allMessages, nil
-}
-
-func (smail *SmailClient) IndividualTrail(id string) {
-
-	s, err := smail.srv.Users.Threads.Get("me", id).Do()
-	if err != nil {
-		log.Println("Could not get thread %v", err.Error())
-	}
-
-	threadBytes, _ := s.MarshalJSON()
-	log.Println("The thread", string(threadBytes))
+	return msgList, nil
 }

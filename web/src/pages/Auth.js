@@ -31,6 +31,9 @@ const SubmitButton = styled.button`
   background: red;
   color: white;
   font-size: 15px;
+  font-family: "Courier New", Courier, monospace;
+  font-weight: 700;
+  margin-bottom: 20px;
 `;
 
 const BTNHolder = styled.div``;

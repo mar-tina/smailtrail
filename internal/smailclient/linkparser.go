@@ -42,8 +42,6 @@ func ParseBody(headers []models.Part, docBody string) error {
 				log.Printf("Link Href does not exist %v", err.Error())
 			}
 
-			log.Printf("This is the selection %v \n", ret)
-
 			unsubLink = ret
 		}
 
