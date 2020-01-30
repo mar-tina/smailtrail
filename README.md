@@ -4,8 +4,8 @@ To run the app. - Clone the repositiory - Go to [Google auth](https://developers
 
 There is a backend service and a frontend service. To run the backend
 
-    `cd cmd`
-    `go run main.go`
+    - cd cmd
+    - go run main.go
 
 To run the frontend
 
