@@ -3,13 +3,13 @@ import styled from "styled-components";
 import axios from "axios";
 
 const Title = styled.div`
-  font-size: 1.5em;
+  font-size: 1.2em;
   text-align: center;
   color: palevioletred;
 `;
 
 const Wrapper = styled.section`
-  padding: 2em;
+  padding: 0.5em;
   display: grid;
   justify-content: center;
 `;
@@ -41,7 +41,9 @@ const SeeMoreButton = styled.button`
   }
 `;
 
-const ContentWrapper = styled.div``;
+const ContentHolder = styled.div`
+  padding: 30px;
+`;
 
 const Subscriptions = () => {
   const [msgs, setMsgs] = useState([]);
@@ -85,6 +87,9 @@ const Subscriptions = () => {
   };
 
   const handleDBRefetch = () => {
+    if (dbdata.length < 10) {
+      return;
+    }
     let newskip = skip + take;
     setSkip(newskip);
     fetchFromDB();
@@ -107,7 +112,7 @@ const Subscriptions = () => {
         {dbdata.map((x, i) => (
           <div key={i}>
             {x.map((y, i) => (
-              <div key={i}>
+              <ContentHolder key={i}>
                 {" "}
                 {y.sender}
                 {y.link !== "" ? (
@@ -115,7 +120,8 @@ const Subscriptions = () => {
                 ) : (
                   <a href={y.link}> Missing Link </a>
                 )}
-              </div>
+                <p>{y.date}</p>
+              </ContentHolder>
             ))}
           </div>
         ))}

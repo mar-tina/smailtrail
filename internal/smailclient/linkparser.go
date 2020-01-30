@@ -63,7 +63,7 @@ func ParseBody(headers []models.Part, docBody string) error {
 }
 
 func checkIfATagContainsUnsubscribe(link string) bool {
-	return strings.Contains(link, "unsubscribe") || strings.Contains(link, "manage email preferences") || strings.Contains(link, "manage your notifications") || strings.Contains(link, "manage your email settings")
+	return strings.Contains(link, "unsubscribe") || strings.Contains(link, "manage email preferences") || strings.Contains(link, "manage your notifications") || strings.Contains(link, "manage your email settings") || strings.Contains(link, "email subscription preferences")
 }
 
 func checkIfHrefContainsUnsubscribe(link *goquery.Selection) bool {
