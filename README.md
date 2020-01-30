@@ -35,7 +35,8 @@ The initial load of the page takes you to the homepage .
 
 To be able to load subscriptions navigate to Manage Your Account. If you had not followed the above
 process of configuring the credentials.json . The page will load forever. Make sure the credentials.json
-file is in the cmd directory next to main.go
+file is in the cmd directory next to main.go. Complete the auth and come back to the auth page and copy 
+the provided auth code.
 ![Authpage Screenshot](/screenshots/auth.png)
 
 Navigate back to the subscriptions page. Click the fetch from API button to load messages from Gmail.
