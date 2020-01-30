@@ -10,12 +10,16 @@ import (
 
 func ParseBody(headers []models.Part, docBody string) error {
 	var unsubLink string
-	resultChannel := make(chan string)
+	fromChannel := make(chan string)
+	dateChannel := make(chan string)
 
 	var fromVal string
+	var dateVal string
+
 	go func() {
-		x := returnSenderValue(headers)
-		resultChannel <- x
+		from, date := returnSenderandDateValue(headers)
+		fromChannel <- from
+		dateChannel <- date
 	}()
 
 	body := strings.NewReader(docBody)
@@ -45,9 +49,10 @@ func ParseBody(headers []models.Part, docBody string) error {
 
 	}
 
-	fromVal = <-resultChannel
+	fromVal = <-fromChannel
+	dateVal = <-dateChannel
 
-	err = StormDBClient.SaveSubscription(unsubLink, fromVal)
+	err = StormDBClient.SaveSubscription(unsubLink, fromVal, dateVal)
 	if err != nil {
 		log.Printf("DB subscription save failed %v", err.Error())
 		return err
@@ -69,13 +74,16 @@ func checkIfHrefContainsUnsubscribe(link *goquery.Selection) bool {
 	return false
 }
 
-func returnSenderValue(headers []models.Part) string {
-	var name string
+func returnSenderandDateValue(headers []models.Part) (name string, date string) {
+
 	for _, val := range headers {
 		if val.Name == "From" {
 			name = val.Value
 		}
+		if val.Name == "Date" {
+			date = val.Value
+		}
 	}
 
-	return name
+	return name, date
 }
