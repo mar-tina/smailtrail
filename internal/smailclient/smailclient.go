@@ -17,7 +17,7 @@ var StormDBClient dbclient.IStormClient
 
 type ISmailClient interface {
 	ListLabels() ([]string, error)
-	ListMessages(nextPageToken string) (models.GmailMsg, []models.Message, error)
+	ListMessages(nextPageToken string) (models.GmailMsg, error)
 	InitSmailClient(credFile, authcode string) error
 }
 
