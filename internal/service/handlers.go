@@ -40,7 +40,6 @@ func ListAllMessages(c echo.Context) error {
 	res = make(map[string]interface{}, 2)
 
 	res["list"] = list
-	res["msgs"] = msgs
 	return c.JSON(200, res)
 }
 

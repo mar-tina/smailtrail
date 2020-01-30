@@ -57,7 +57,7 @@ func (sc *StormClient) SaveSubscription(link, from, date string) error {
 
 func (sc *StormClient) FetchSubscriptions(take, skip int) ([]models.Sub, error) {
 	var subs []models.Sub
-	err := sc.stormDB.All(&subs, storm.Limit(take), storm.Skip(skip), storm.Reverse())
+	err := sc.stormDB.All(&subs, storm.Limit(take), storm.Skip(skip))
 	if err != nil {
 		return nil, err
 	}
