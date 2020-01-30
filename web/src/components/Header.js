@@ -1,13 +1,14 @@
 import React from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import { ReactComponent as Logo } from "./smaillogo.svg";
 
 const HeaderWrappper = styled.div`
-  padding: 20px;
+  padding-top: 40px;
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-evenly;
-  font-size: 1.5em;
+  justify-content: space-around;
+  font-size: 1em;
   text-align: center;
 `;
 
@@ -19,6 +20,9 @@ const HeaderItem = styled.div`
 const Header = () => {
   return (
     <HeaderWrappper>
+      <HeaderItem>
+        <Logo />
+      </HeaderItem>
       <HeaderItem>
         <Link style={{ color: "inherit", textDecoration: "inherit" }} to="/">
           Home

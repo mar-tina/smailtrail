@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from "react";
+import { useRouteMatch } from "react-router-dom";
 import styled from "styled-components";
 import axios from "axios";
 
+
 const Title = styled.div`
-  font-size: 1.5em;
+  font-size: 1.2em;
   text-align: center;
   color: palevioletred;
 `;
 
 const Wrapper = styled.section`
-  padding: 2em;
+  padding: 0.5em;
   display: grid;
   justify-content: center;
 `;
@@ -41,7 +43,9 @@ const SeeMoreButton = styled.button`
   }
 `;
 
-const ContentWrapper = styled.div``;
+const ContentHolder = styled.div`
+  padding: 20px;
+`;
 
 const Subscriptions = () => {
   const [msgs, setMsgs] = useState([]);
@@ -50,7 +54,9 @@ const Subscriptions = () => {
   const [dbdata, setdbData] = useState([]);
   const [skip, setSkip] = useState(0);
 
-  let take = 10;
+  let take = 5;
+
+  let { path, url } = useRouteMatch();
 
   useEffect(() => {
     fetchFromDB();
@@ -70,6 +76,9 @@ const Subscriptions = () => {
 
   const fetchFromDB = async () => {
     setLoading(true);
+    let newskip = skip + take;
+    setSkip(newskip);
+    console.log("New skip", skip)
     const result = await axios(
       `http://localhost:8000/subs?take=${take}&skip=${skip}`
     );
@@ -84,9 +93,10 @@ const Subscriptions = () => {
     fetchData();
   };
 
-  const handleDBRefetch = () => {
+  const handleDBRefetch = async () => {
     let newskip = skip + take;
     setSkip(newskip);
+    // console.log("skip value", skip);
     fetchFromDB();
   };
 
@@ -107,7 +117,7 @@ const Subscriptions = () => {
         {dbdata.map((x, i) => (
           <div key={i}>
             {x.map((y, i) => (
-              <div key={i}>
+              <ContentHolder key={i}>
                 {" "}
                 {y.sender}
                 {y.link !== "" ? (
@@ -115,7 +125,8 @@ const Subscriptions = () => {
                 ) : (
                   <a href={y.link}> Missing Link </a>
                 )}
-              </div>
+                <p>{y.date}</p>
+              </ContentHolder>
             ))}
           </div>
         ))}
