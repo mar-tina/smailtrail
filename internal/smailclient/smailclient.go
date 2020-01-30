@@ -19,7 +19,6 @@ type ISmailClient interface {
 	ListLabels() ([]string, error)
 	ListMessages(nextPageToken string) (models.GmailMsg, []models.Message, error)
 	InitSmailClient(credFile, authcode string) error
-	IndividualTrail(id string)
 }
 
 type SmailClient struct {
