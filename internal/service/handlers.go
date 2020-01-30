@@ -31,7 +31,7 @@ func ListAllMessages(c echo.Context) error {
 
 	tokparam := c.QueryParam("nextpagetoken")
 
-	list, msgs, err := MySmailClient.ListMessages(tokparam)
+	list, err := MySmailClient.ListMessages(tokparam)
 	if err != nil {
 		return c.String(500, err.Error())
 	}
@@ -71,6 +71,7 @@ func InitialAuth(c echo.Context) error {
 	if err != nil {
 		return c.JSON(500, message)
 	}
+
 	jsonBytes, _ := json.Marshal(authURL)
 	return c.String(200, string(jsonBytes))
 }
