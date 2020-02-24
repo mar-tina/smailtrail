@@ -31,22 +31,34 @@ Things Not Done Yet:
 How To navigate the app
 
 The initial load of the page takes you to the homepage .
-![Homepage Screenshot](/screenshots/home.png)
+------------ |
+<img src="https://github.com/mar-tina/smailtrail/blob/master/screenshots/auth.png" alt="auth page" height="500px"> | 
+
+------------ |
+Homepage
+<img src="https://github.com/mar-tina/smailtrail/blob/master/screenshots/home.png" alt="home page" height="500px"> | 
 
 To be able to load subscriptions navigate to Manage Your Account. If you had not followed the above
 process of configuring the credentials.json . The page will load forever. Make sure the credentials.json
 file is in the cmd directory next to main.go. Complete the auth and come back to the auth page and copy 
 the provided auth code.
-![Authpage Screenshot](/screenshots/auth.png)
+
+------------ |
+Auth Page
+<img src="https://github.com/mar-tina/smailtrail/blob/master/screenshots/auth.png" alt="auth page" height="500px"> | 
 
 Navigate back to the subscriptions page. Click the fetch from API button to load messages from Gmail.
 The messages are loaded per page. Current limit is set to 50. Then refresh the page after load is complete
 to see your links
-![Authpage Screenshot](/screenshots/subs.png)
+------------ |
+Subscriptions
+<img src="https://github.com/mar-tina/smailtrail/blob/master/screenshots/subs.png" alt="home page" height="500px"> | 
+
 
 Here is the overall flow
 
-
-![Overall Flow](/screenshots/smailtrail.gif)
+------------ |
+Overall Flow
+<img src="https://github.com/mar-tina/smailtrail/blob/master/screenshots/smailtrail.gif" alt="overall flow" height="500px"> | 
 
 Feel Free to raise issues and bug reports
